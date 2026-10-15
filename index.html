@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Día del Abogado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background: radial-gradient(circle at 50% 40%, #3a1219 0%, #0d0205 100%);
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .serif { font-family: 'Playfair Display', serif; }
+        .script { font-family: 'Dancing Script', cursive; }
+        .cinzel { font-family: 'Cinzel', serif; }
+
+        /* Briefcase Container */
+        .scene {
+            perspective: 1200px;
+            position: relative;
+            width: 340px;
+            height: 240px;
+            z-index: 10;
+            margin-top: 180px; /* Este margen separa el maletín del título superior */
+        }
+
+        /* Shake animation before opening */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-3px) rotate(-1deg); }
+            50% { transform: translateX(3px) rotate(1deg); }
+            75% { transform: translateX(-3px) rotate(-0.5deg); }
+        }
+
+        .shake-briefcase {
+            animation: shake 0.6s ease-in-out;
+        }
+
+        /* Briefcase Parts */
+        .briefcase-back {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a0b08;
+            border-radius: 8px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+            z-index: 1;
+        }
+
+        .briefcase-handle {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 55px;
+            border: 10px solid #2a120c;
+            border-bottom: none;
+            border-radius: 30px 30px 0 0;
+            z-index: 0;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.5);
+        }
+
+        .briefcase-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 85%;
+            background: linear-gradient(135deg, #381810, #220e09);
+            border-radius: 4px 4px 8px 8px;
+            z-index: 30;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            border-top: 1px solid #542518;
+        }
+
+        .briefcase-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25%;
+            background: linear-gradient(to bottom, #4a2115, #381810);
+            border-radius: 8px 8px 4px 4px;
+            z-index: 40;
+            transform-origin: top;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-bottom: 1px solid #1a0b08;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.6);
+        }
+
+        .scene.open .briefcase-flap {
+            transform: rotateX(155deg);
+        }
+
+        .scene:not(.open) {
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scene:not(.open):hover {
+            transform: scale(1.03) translateY(-5px);
+        }
+
+        /* Lock Details */
+        .lock-base {
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 54px;
+            height: 32px;
+            background: linear-gradient(to bottom, #e2c275, #aa7c11);
+            border-radius: 3px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.4);
+            border: 1px solid #5c410a;
+        }
+
+        .lock-catch {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 44px;
+            height: 28px;
+            background: linear-gradient(to bottom, #fde398, #d4af37);
+            border-radius: 0 0 3px 3px;
+            z-index: 31;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.5);
+            border: 1px solid #8a6512;
+            border-top: none;
+        }
+
+        /* Golden Glow Effect */
+        .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.1);
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(212,175,55,0.4) 0%, rgba(212,175,55,0) 70%);
+            opacity: 0;
+            z-index: 15;
+            border-radius: 50%;
+            transition: all 1.8s ease-out;
+            pointer-events: none;
+        }
+
+        .scene.open .glow {
+            opacity: 1;
+            transform: translate(-50%, -100%) scale(3);
+        }
+
+        /* Premium Cards */
+        .cards-container {
+            position: absolute;
+            top: 10%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+        }
+
+        .card {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 130px;
+            height: 180px;
+            opacity: 0;
+            transform: translateX(-50%) translateY(0) scale(0.5);
+            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            perspective: 1000px;
+            cursor: pointer;
+            z-index: 21;
+        }
+
+        .card:hover {
+            filter: brightness(1.05);
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: #fdfbf7;
+            border: 1px solid #e2c275;
+            border-radius: 4px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 20px rgba(212,175,55,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        /* Elegant inner border */
+        .card-front::before, .card-back::before {
+            content: '';
+            position: absolute;
+            top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #fffcf5 0%, #f4ebd8 100%);
+        }
+
+        .card.pop-1 {
+            opacity: 1;
+            transform: translate(-150%, -210px) rotate(-12deg) scale(1);
+        }
+
+        .card.pop-2 {
+            opacity: 1;
+            width: 140px;
+            height: 195px;
+            transform: translate(-50%, -240px) scale(1.05);
+            z-index: 25;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .card.pop-3 {
+            opacity: 1;
+            transform: translate(50%, -210px) rotate(12deg) scale(1);
+        }
+
+        .final-message-container {
+            position: absolute;
+            bottom: 8%;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 2.5s ease-in-out;
+            z-index: 50;
+        }
+
+        .final-message-container.show {
+            opacity: 1;
+            transform: translateY(0);
+            letter-spacing: 0.1em;
+        }
+
+        /* Pulsing Instructions */
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 0.9; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.3; transform: translateX(-50%) scale(0.98); }
+        }
+
+        .instruction-text {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            text-align: center;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        .pulse-anim {
+            animation: pulse-soft 2.5s infinite ease-in-out;
+        }
+
+        .hidden-instruction {
+            opacity: 0 !important;
+        }
+    </style>
+</head>
+<body class="text-white selection:bg-[#d4af37] selection:text-[#120306]">
+
+    <!-- Main Title -->
+    <h1 class="absolute top-12 w-full text-center px-4 z-50 flex flex-col items-center">
+        <span class="cinzel text-xl md:text-3xl text-[#d4af37] tracking-[0.25em] font-light mb-2 opacity-90">PARA MI ABOGADA FAVORITA</span>
+        <span class="script text-6xl md:text-8xl text-[#ffccd5] drop-shadow-[0_0_20px_rgba(255,182,193,0.3)] mt-2">¡Te amo!</span>
+    </h1>
+
+    <!-- The Briefcase Scene -->
+    <div class="scene" id="briefcaseScene">
+        <div class="briefcase-handle"></div>
+        <div class="briefcase-back"></div>
+        
+        <div class="glow"></div>
+
+        <div class="cards-container">
+            <!-- Left Card -->
+            <div class="card" id="card1">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="text-4xl drop-shadow-md">⚖️</span>
+                        <span class="cinzel text-[9px] text-[#8a6512] mt-5 uppercase tracking-widest font-semibold">Tócame</span>
+                    </div>
+                    <div class="card-back">
+                        <p class="text-[#3a2015] font-serif text-[13px] italic font-medium leading-relaxed">
+                            "Tus argumentos siempre ganan mi corazón."
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Center Card -->
+            <div class="card" id="card2">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="text-[#3a2015] cinzel font-semibold leading-relaxed px-1 text-sm tracking-wider">
+                            <span class="block text-[#d4af37] text-xs mb-2">✦</span>
+                            FELIZ DÍA<br>MI AMOR
+                            <span class="block text-[#d4af37] text-xs mt-2">✦</span>
+                        </div>
+                        <span class="cinzel text-[9px] text-[#8a6512] mt-4 uppercase tracking-widest font-semibold">Tócame</span>
+                    </div>
+                    <div class="card-back">
+                        <p class="text-[#3a2015] font-serif text-[13px] italic font-medium leading-relaxed px-2">
+                            "Condenado a quererte toda la vida, y no pienso apelar la sentencia."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card -->
+            <div class="card" id="card3">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span class="text-4xl drop-shadow-md">🔨</span>
+                        <span class="cinzel text-[9px] text-[#8a6512] mt-5 uppercase tracking-widest font-semibold">Tócame</span>
+                    </div>
+                    <div class="card-back">
+                        <p class="text-[#3a2015] font-serif text-[12px] italic font-medium leading-relaxed">
+                            "Eres la jueza de mis pensamientos y la abogada de mis sueños."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="briefcase-front">
+            <div class="lock-catch"></div>
+        </div>
+
+        <div class="briefcase-flap">
+            <div class="lock-base"></div>
+        </div>
+        
+        <!-- Instrucciones interactivas -->
+        <div id="instOpen" class="instruction-text pulse-anim">Toca el maletín para abrir</div>
+        <div id="instTouch" class="instruction-text pulse-anim hidden-instruction">Toca cada carta</div>
+    </div>
+
+    <!-- Final Message -->
+    <div class="final-message-container" id="finalMessage">
+        <p class="cinzel text-xs md:text-sm text-[#d4af37] font-light tracking-[0.2em] uppercase opacity-80" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+            lo siento por ser mas atento
+        </p>
+    </div>
+
+    <!-- Glassmorphism Card Modal -->
+    <div id="cardModal" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a0204]/70 backdrop-blur-xl hidden opacity-0 transition-opacity duration-500">
+        <div id="modalContent" class="relative w-11/12 max-w-lg bg-white/5 backdrop-blur-3xl rounded-2xl p-10 md:p-14 border border-[#d4af37]/30 shadow-[0_30px_60px_rgba(0,0,0,0.7)] transform scale-95 transition-all duration-500">
+            <!-- Inner decorative border -->
+            <div class="absolute inset-4 border border-[#d4af37]/20 rounded-xl pointer-events-none"></div>
+            
+            <div class="text-center mb-8">
+                <span class="text-5xl drop-shadow-[0_0_20px_rgba(212,175,55,0.4)]" id="modalIcon">💌</span>
+            </div>
+            
+            <p id="modalText" class="serif text-[#fdfbfb] text-2xl md:text-3xl italic font-light leading-relaxed text-center mb-12 drop-shadow-lg">
+                <!-- Text injected by JS -->
+            </p>
+            
+            <div class="text-center relative z-10">
+                <button id="closeModalBtn" class="bg-transparent border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-[#0a0204] font-sans tracking-[0.2em] uppercase text-xs py-3 px-12 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.5)]">
+                    Atrás
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sequence the animations
+        window.onload = () => {
+            const scene = document.getElementById('briefcaseScene');
+            const cards = [document.getElementById('card1'), document.getElementById('card2'), document.getElementById('card3')];
+            const finalMsg = document.getElementById('finalMessage');
+            const instOpen = document.getElementById('instOpen');
+            const instTouch = document.getElementById('instTouch');
+            let isOpened = false;
+
+            // Abrir el maletín al hacer click
+            scene.addEventListener('click', () => {
+                if (isOpened) return;
+                isOpened = true;
+
+                // Ocultar primera instrucción
+                instOpen.classList.add('hidden-instruction');
+
+                // 1. Initial anticipation shake
+                scene.classList.add('shake-briefcase');
+
+                // 2. Open the briefcase
+                setTimeout(() => {
+                    scene.classList.add('open');
+                }, 600);
+
+                // 3. Pop the cards out with a slight stagger for a fanning effect
+                setTimeout(() => {
+                    cards[1].classList.add('pop-2'); // Center pops first
+                }, 1200);
+
+                setTimeout(() => {
+                    cards[0].classList.add('pop-1'); // Then left
+                    cards[2].classList.add('pop-3'); // Then right
+                }, 1400);
+
+                // Mostrar segunda instrucción después de que las cartas salgan
+                setTimeout(() => {
+                    instTouch.classList.remove('hidden-instruction');
+                }, 2400);
+
+                // 4. Fade in the final personalized message
+                setTimeout(() => {
+                    finalMsg.classList.add('show');
+                }, 2800);
+            });
+
+            // Elementos del Modal
+            const modal = document.getElementById('cardModal');
+            const modalText = document.getElementById('modalText');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalContent = document.getElementById('modalContent');
+            const closeBtn = document.getElementById('closeModalBtn');
+
+            // Abrir modal en pantalla completa al tocar una carta
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Solo permitir abrir si el maletín ya se abrió y las cartas salieron
+                    if (isOpened && (card.classList.contains('pop-1') || card.classList.contains('pop-2') || card.classList.contains('pop-3'))) {
+                        e.stopPropagation(); 
+                        
+                        // Obtener el texto oculto en la parte trasera de la carta
+                        const text = card.querySelector('.card-back p').innerText;
+                        
+                        // Buscar el emoji/icono de la carta (si no tiene, usa 💌 por defecto)
+                        const iconEl = card.querySelector('.card-front span.text-5xl');
+                        const icon = iconEl ? iconEl.innerText : '💌';
+                        
+                        modalText.innerText = text;
+                        modalIcon.innerText = icon;
+                        
+                        // Mostrar el modal con una animación suave
+                        modal.classList.remove('hidden');
+                        setTimeout(() => {
+                            modal.classList.remove('opacity-0');
+                            modalContent.classList.remove('scale-95');
+                            modalContent.classList.add('scale-100');
+                        }, 10);
+                    }
+                });
+            });
+
+            // Cerrar el modal con el botón "Atrás"
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('opacity-0');
+                modalContent.classList.remove('scale-100');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300); // Esperar que termine la transición de opacidad
+            });
+        };
+    </script>
+</body>
+</html>
